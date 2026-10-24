@@ -1,0 +1,211 @@
+{
+  "title": "Building a Full AI Application from Scratch in 60 Minutes",
+  "summary": "Dr. Sun builds a complete AI web app live to show the workflow students will use for their own projects: identify a problem, design the app, iterate on the prompt, call the model through an API, wrap it in a server, and add a front end. The example app turns a video's purpose, length and topic into a scene-by-scene production guide. Most of the lecture focuses on prompt iteration, especially forcing the model to return the same JSON structure every time so the app can parse and display it. The main message is that building the app is now fast with AI coding tools, so the real value is in choosing a good problem and engineering a reliable prompt.",
+  "key_takeaways": [
+    "Follow the cycle: problem, design, prompt iteration, API call, server, front end, test.",
+    "Start from a specific problem, then sketch the input screen, output screen and data flow before coding.",
+    "Improve prompts in versions: persona first, then ask the AI to refine it, then add output constraints.",
+    "An app needs standardized, parseable output, so the final prompt uses a fixed JSON schema (template pattern).",
+    "Keep the prompt in its own file and fill in variables from code, so the server can reuse it for any input.",
+    "You don't need to train a model; knowing how to prompt it well is what makes the product work."
+  ],
+  "sections": [
+    {
+      "title": "The AI app development cycle",
+      "start_time": "0:02",
+      "bullets": [
+        "With AI code generation, a full AI app can be built very quickly.",
+        "Steps: identify a specific problem, design the solution, write and iterate on the prompt, call the model API, build the server, add the front end, then test everything together.",
+        "Students should build their own application with a UI and back end rather than relying on an existing chat tool."
+      ]
+    },
+    {
+      "title": "Problem: guiding beginners to make videos",
+      "start_time": "1:48",
+      "bullets": [
+        "Students often need short videos about their projects but lack scripting and filming experience.",
+        "Writing scripts and planning footage is time-consuming, and a good prompt can produce professional guidance.",
+        "Goal: generate a detailed, step-by-step outline the user can follow to make the video."
+      ]
+    },
+    {
+      "title": "Designing the app and data flow",
+      "start_time": "3:14",
+      "bullets": [
+        "A web app fits better than mobile for this tool.",
+        "Input screen: video purpose, length and main content, plus a generate button (style was dropped because it follows from the purpose).",
+        "Output screen: a list of scenes, each with script, footage/clips and transitions or background music.",
+        "Data flow: UI sends inputs to a server, the server calls the AI model API with a prompt, and results come back to the UI.",
+        "The quality of the whole app depends on having a good prompt."
+      ]
+    },
+    {
+      "title": "Prompt v1 and v2: persona and refinement",
+      "start_time": "7:47",
+      "bullets": [
+        "v1 used the persona pattern: act as an award-winning film director helping a user with little video experience.",
+        "The rough prompt included placeholders for purpose, length and content.",
+        "v2 applied the refinement pattern by asking ChatGPT to polish and improve the prompt.",
+        "The refined prompt added a 'video production mentor' role and asked for a structure overview, scene breakdown, narration, footage guidance and transitions.",
+        "Testing v2 with a 3-minute hackathon pitch produced very detailed, professional results."
+      ]
+    },
+    {
+      "title": "Prompt v3: standardized JSON output",
+      "start_time": "17:24",
+      "bullets": [
+        "v2's output was high quality but unstructured and inconsistent between runs, which an app can't reliably display.",
+        "Requirements for v3: output JSON, keep the same structure every time, and list scenes with all related content under each one.",
+        "ChatGPT first misunderstood and turned the template itself into JSON; the fix was clarifying that the prompt should produce JSON output.",
+        "The final prompt uses the template pattern with a schema the model must follow.",
+        "Tests with two different inputs (3-minute pitch, 1-minute class introduction) returned the same structure."
+      ]
+    },
+    {
+      "title": "Calling the model from code",
+      "start_time": "32:23",
+      "bullets": [
+        "The API lets the program send a prompt and get a response, the same way a user would in the chat app.",
+        "The quickstart is a few lines: create a client, choose a model, send input, print output.",
+        "An API key from the account settings is required; storing it in an environment variable is safer than putting it in code.",
+        "A smaller 'mini' model is faster and cheaper, at some cost in output length or quality.",
+        "Cursor modified the script to load the prompt template from a file and replace the three variables; the output was saved as a sample."
+      ]
+    },
+    {
+      "title": "Turning the script into a Flask server",
+      "start_time": "44:34",
+      "bullets": [
+        "The script was wrapped in a Flask server with one POST endpoint that takes the three parameters.",
+        "Cursor added exception handling and a health check endpoint, and opened the host to all IPs.",
+        "Port conflicts were fixed by switching ports.",
+        "The endpoint was tested with an HTTP request before building any UI."
+      ]
+    },
+    {
+      "title": "Building the front end and final demo",
+      "start_time": "49:18",
+      "bullets": [
+        "Cursor was asked for a clean, modern web UI with the three inputs and an organized results view.",
+        "Giving it the saved sample JSON let it design the page around the real output structure.",
+        "The front end was served from the same Flask server.",
+        "The first demo hit a 'failed to fetch' error, then worked; the page showed metadata, a structure overview, expandable scenes and editing tips."
+      ]
+    },
+    {
+      "title": "Takeaways and the next assignment",
+      "start_time": "59:50",
+      "bullets": [
+        "An app like this used to be a semester-long term project and now takes about an hour.",
+        "AI products like this don't require training a model, just effective prompting.",
+        "Next assignment: build your own AI app following these steps, as an individual project.",
+        "The app should take some user input; how much depends on the problem.",
+        "You can keep iterating on the output to make it cleaner."
+      ]
+    }
+  ],
+  "key_concepts": [
+    {
+      "term": "Persona pattern",
+      "definition": "A prompt pattern that tells the model to act as a specific expert or role so its answers match that role's knowledge and style.",
+      "example": "The first prompt began 'act as an award-winning film director' guiding a beginner."
+    },
+    {
+      "term": "Refinement pattern",
+      "definition": "Asking the AI to critique and improve your own prompt, then using its improved version.",
+      "example": "Dr. Sun pasted his rough prompt and asked ChatGPT to polish it, producing a much more detailed v2."
+    },
+    {
+      "term": "Template pattern",
+      "definition": "Giving the model a fixed output structure with placeholders so every response follows the same format.",
+      "example": "The final prompt included a JSON schema the model had to follow for every video guide."
+    },
+    {
+      "term": "Structured (JSON) output",
+      "definition": "Model output in a consistent machine-readable format so code can parse it and display each field.",
+      "example": "The UI could only show scenes reliably once every response used the same JSON structure."
+    },
+    {
+      "term": "Prompt template with variables",
+      "definition": "A saved prompt containing placeholders that code fills in with user input before sending it to the model.",
+      "example": "The script loaded the prompt from a file and replaced purpose, length and content with local variables."
+    },
+    {
+      "term": "API key",
+      "definition": "A secret credential that identifies your account when your program calls a paid AI API.",
+      "example": "The first API run failed until a key was created in settings and added to the code."
+    },
+    {
+      "term": "Server endpoint",
+      "definition": "A URL on the back end that accepts a request, does work (such as calling the model) and returns a response.",
+      "example": "The Flask server exposed one POST endpoint that took the three inputs and returned the JSON guide."
+    },
+    {
+      "term": "Health check",
+      "definition": "A simple endpoint that confirms the server is running.",
+      "example": "Cursor added a health check, which was visited in the browser to confirm the server was up."
+    }
+  ],
+  "quiz": [
+    {
+      "question": "Why did Dr. Sun create a third version of the prompt even though v2 produced high-quality guides?",
+      "options": [
+        "v2 was too expensive to run through the API",
+        "v2's output format varied, so the app couldn't reliably parse and display it",
+        "v2 did not use the persona pattern",
+        "v2 only worked for videos longer than three minutes"
+      ],
+      "answer_index": 1,
+      "explanation": "The app's output screen needs the same structure every time, so v3 required a fixed JSON schema.",
+      "related_section": "Prompt v3: standardized JSON output"
+    },
+    {
+      "question": "Which step comes right after designing the solution in the development cycle from this lecture?",
+      "options": [
+        "Building the front end",
+        "Deploying the server",
+        "Writing and iterating on the prompt",
+        "Training a custom model"
+      ],
+      "answer_index": 2,
+      "explanation": "The cycle is problem, design, prompt iteration, API call, server, front end, then testing.",
+      "related_section": "The AI app development cycle"
+    },
+    {
+      "question": "When asked to make the prompt produce JSON, ChatGPT first returned something unusable. What went wrong?",
+      "options": [
+        "It refused to output JSON",
+        "It produced invalid JSON with syntax errors",
+        "It ignored the scenes requirement",
+        "It converted the prompt template itself into JSON instead of making the prompt generate JSON output"
+      ],
+      "answer_index": 3,
+      "explanation": "Dr. Sun had to clarify that the goal was JSON output from the model, not a JSON-formatted prompt.",
+      "related_section": "Prompt v3: standardized JSON output"
+    },
+    {
+      "question": "Why was the saved sample JSON output useful when asking Cursor to build the front end?",
+      "options": [
+        "It showed the real output structure, so the page could be designed to display every field",
+        "It let the front end skip calling the server",
+        "It replaced the need for a prompt template",
+        "It reduced the API cost of the demo"
+      ],
+      "answer_index": 0,
+      "explanation": "Without a sample, the AI tool wouldn't know which fields to render or how they're nested.",
+      "related_section": "Building the front end and final demo"
+    },
+    {
+      "question": "What did Dr. Sun say was a safer way to provide the API key than pasting it directly into the code?",
+      "options": [
+        "Putting it in the prompt template",
+        "Storing it in an environment variable",
+        "Sending it from the front end",
+        "Using a smaller model"
+      ],
+      "answer_index": 1,
+      "explanation": "He mentioned that an environment variable is safer, though he pasted it into the code for the demo.",
+      "related_section": "Calling the model from code"
+    }
+  ]
+}

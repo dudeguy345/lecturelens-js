@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LectureLens</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="/" aria-label="LectureLens home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="28" height="28"><circle cx="14" cy="14" r="9" fill="none" stroke="currentColor" stroke-width="3"/><path d="M21 21l7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M10 12h8M10 16h5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </span>
+        <span class="brand-name">LectureLens</span>
+      </a>
+      <span id="status-pill" class="pill" hidden></span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- INPUT -->
+    <section id="input-view">
+      <div class="hero">
+        <h1>Turn a long lecture into a study guide you'll actually use.</h1>
+        <p class="lede">Paste a transcript and get organized notes, key concepts, a practice quiz and flashcards in about a minute.</p>
+      </div>
+
+      <form id="guide-form" class="card form-card" novalidate>
+        <div class="grid-2">
+          <label class="field">
+            <span class="label">Course or topic</span>
+            <input id="course" type="text" placeholder="e.g. CS4680 Prompt Engineering" maxlength="120" autocomplete="off">
+          </label>
+          <div class="field">
+            <span class="label">Quiz questions</span>
+            <select id="num-questions">
+              <option>3</option><option selected>5</option><option>8</option><option>10</option><option>15</option>
+            </select>
+          </div>
+        </div>
+
+        <fieldset class="field">
+          <legend class="label">Study goal</legend>
+          <div class="segmented" role="radiogroup">
+            <label><input type="radio" name="goal" value="quick_recap"><span><b>Quick recap</b><small>Main ideas only</small></span></label>
+            <label><input type="radio" name="goal" value="exam_review" checked><span><b>Exam review</b><small>Everything testable</small></span></label>
+            <label><input type="radio" name="goal" value="deep_dive"><span><b>Deep dive</b><small>Examples and reasoning</small></span></label>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <div class="label-row">
+            <label class="label" for="transcript">Transcript</label>
+            <label class="file-btn">
+              <input id="file-input" type="file" accept=".txt,.srt,.vtt,text/plain">
+              Upload .txt / .srt / .vtt
+            </label>
+          </div>
+          <textarea id="transcript" rows="12" placeholder="Paste the lecture transcript here. On YouTube: … more → Show transcript, then copy it. Timestamps are welcome."></textarea>
+          <div class="hint" id="transcript-stats">No transcript yet.</div>
+        </div>
+
+        <div id="form-error" class="alert" role="alert" hidden></div>
+
+        <button id="generate-btn" class="btn btn-primary" type="submit">Generate study guide</button>
+      </form>
+
+      <div id="loading" class="card loading" hidden aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <div>
+          <p class="loading-msg" id="loading-msg">Reading the transcript…</p>
+          <p class="hint">Long lectures can take up to a minute. <span id="elapsed">0s</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="result-view" hidden>
+      <div class="result-head">
+        <div>
+          <p class="eyebrow" id="result-meta"></p>
+          <h1 id="result-title"></h1>
+        </div>
+        <div class="actions">
+          <button class="btn btn-ghost" id="export-btn" type="button">Download notes (.md)</button>
+          <button class="btn btn-ghost" id="new-btn" type="button">New guide</button>
+        </div>
+      </div>
+      <div id="mock-banner" class="alert alert-info" hidden>Mock mode: this is sample data. Add your GEMINI_API_KEY to <code>.env</code> and restart the server to analyze real transcripts.</div>
+
+      <nav class="tabs" role="tablist" aria-label="Study guide sections">
+        <button role="tab" data-tab="overview" aria-selected="true">Overview</button>
+        <button role="tab" data-tab="notes" aria-selected="false">Notes</button>
+        <button role="tab" data-tab="concepts" aria-selected="false">Key concepts</button>
+        <button role="tab" data-tab="quiz" aria-selected="false">Quiz</button>
+        <button role="tab" data-tab="flashcards" aria-selected="false">Flashcards</button>
+      </nav>
+
+      <div class="panel" id="panel-overview" role="tabpanel"></div>
+      <div class="panel" id="panel-notes" role="tabpanel" hidden></div>
+      <div class="panel" id="panel-concepts" role="tabpanel" hidden></div>
+      <div class="panel" id="panel-quiz" role="tabpanel" hidden></div>
+      <div class="panel" id="panel-flashcards" role="tabpanel" hidden></div>
+    </section>
+  </main>
+
+  <footer class="wrap footer">Built with Node.js and the Gemini API · AI output can contain mistakes, so check it against your lecture.</footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

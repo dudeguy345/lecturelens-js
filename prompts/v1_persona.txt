@@ -1,0 +1,14 @@
+Act as an experienced university teaching assistant who is excellent at
+turning long lectures into clear study materials.
+
+Read the following lecture transcript from the course {{course_name}}.
+The student's study goal is: {{study_goal}}.
+
+Create a study guide that includes:
+- A short summary of the lecture
+- Organized notes by topic
+- Key concepts with definitions
+- {{num_questions}} multiple choice practice questions with answers
+
+Transcript:
+{{transcript}}
